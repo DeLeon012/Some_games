@@ -99,12 +99,9 @@ keyboard.add_hotkey('d', change_dir, args=[1, 0])
 
 start()
 while True:
+    if param['game_over']:
+        print('Game Over')
+        break
     move()
     show()
-    if param['game_over']:
-        # print('Game Over')
-        # print(f'Score: {param["score"]}')
-        # break
-        param['game_over'] = False
-
     time.sleep(0.3)
