@@ -3,7 +3,7 @@ import time
 import keyboard
 from random import randrange
 
-SIZE = 7
+SIZE = 4
 WIDTH = 6
 SPAWN = [2] * 9 + [4]
 status = {
