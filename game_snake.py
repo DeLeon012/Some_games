@@ -107,4 +107,4 @@ while True:
         # break
         param['game_over'] = False
 
-    time.sleep(0.2)
+    time.sleep(0.3)
