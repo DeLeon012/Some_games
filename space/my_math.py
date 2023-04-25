@@ -2,7 +2,7 @@ from math import cos, sin
 
 
 class vector:
-    def __init__(self, x=0, y=0):
+    def __init__(self, x=0.0, y=0.0):
         self.x = x
         self.y = y
 
@@ -34,6 +34,28 @@ class vector:
             y = self.y * other
         else:
             raise Exception('Непонятный расчет (умножение)')
+        return vector(x, y)
+
+    def __truediv__(self, other):
+        if isinstance(other, vector):
+            x = self.x / other.x
+            y = self.y / other.y
+        elif isinstance(other, (int, float)):
+            x = self.x / other
+            y = self.y / other
+        else:
+            raise Exception('Непонятный расчет (деление)')
+        return vector(x, y)
+
+    def __floordiv__(self, other):
+        if isinstance(other, vector):
+            x = self.x // other.x
+            y = self.y // other.y
+        elif isinstance(other, (int, float)):
+            x = self.x // other
+            y = self.y // other
+        else:
+            raise Exception('Непонятный расчет (деление)')
         return vector(x, y)
 
     def rotate(self, alf):
