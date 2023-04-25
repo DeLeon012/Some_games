@@ -37,8 +37,11 @@ class vector:
         return vector(x, y)
 
     def rotate(self, alf):
-        self.x = self.x * cos(alf) - self.y * sin(alf)
-        self.y = self.x * sin(alf) + self.y * cos(alf)
+        last = self.len()
+        self.x = self.x * cos(alf) + self.y * sin(alf)
+        self.y = - self.x * sin(alf) + self.y * cos(alf)
+        self.x *= last / self.len()
+        self.y *= last / self.len()
 
     def __getitem__(self, item):
         if item == 0:
@@ -60,3 +63,11 @@ def sin_v(v1: vector, v2: vector):
     x1, y1 = v1.x, v1.y
     x2, y2 = v2.x, v2.y
     return (((x1 ** 2 + y1 ** 2) * (x2 ** 2 + y2 ** 2) - (x1 * x2 + y1 * y2)) ** 0.5)/(v1.len() * v2.len())
+
+
+def get_color(mass):
+    k = (-500) / mass + 1
+    r = 240 + int((93 - 240) * k)
+    g = 116 + int((127 - 116) * k)
+    b = 82 + int((247 - 82) * k)
+    return r, g, b
