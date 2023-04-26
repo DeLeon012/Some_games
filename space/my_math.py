@@ -74,7 +74,7 @@ class vector:
             raise IndexError('У вектора только два индекса')
 
     def __str__(self):
-        return f'({self.x}, {self.y})'
+        return f'v({self.x}, {self.y})'
 
 
 def cos_v(v1: vector, v2: vector):

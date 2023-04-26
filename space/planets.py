@@ -5,14 +5,14 @@ from random import randrange
 
 
 window = pyglet.window.Window(
-    # fullscreen=True,
-    width=1000, height=1000
+    fullscreen=True,
+    # width=1000, height=1000
 )
 circle = pyglet.shapes.Circle
 
-G = 1.5
+G = 1
 p_V = 0.3
-T = 0.01
+T = 0.5
 
 a_contact = 0.3
 
@@ -31,14 +31,11 @@ class ball:
     def F_add(self, ball2):
         r = ball2.poss - self.poss
         r_len = r.len()
-        F = r * (G * ball2.mass * self.mass / (r_len ** 3))
-        self.F += F
-
+        r /= r_len
         if r_len < self.R + ball2.R:
-            print('Contact')
-            c = cos_v(r, self.F)
-            N = r * (self.F * c) / (-r_len)
-            self.F += N
+            r_len = self.R + ball2.R
+        F = r * (G * ball2.mass * self.mass / (r_len ** 2))
+        self.F += F
 
     def update(self):
         if not self.static:
@@ -46,14 +43,14 @@ class ball:
             self.poss += self.v * T + a * (T ** 2) * 0.5
             self.v += a * T
 
-        if self.poss.x <= self.R:
-            self.v.x = abs(self.v.x)
-        elif self.poss.x >= self.poss.x >= window.width - self.R:
-            self.v.x = -abs(self.v.x)
-        if self.poss.y <= self.R:
-            self.v.y = abs(self.v.y)
-        elif self.poss.y >= self.poss.y >= window.width - self.R:
-            self.v.y = -abs(self.v.y)
+        # if self.poss.x <= self.R:
+        #     self.v.x = abs(self.v.x)
+        # elif self.poss.x >= window.width - self.R:
+        #     self.v.x = -abs(self.v.x)
+        # if self.poss.y <= self.R:
+        #     self.v.y = abs(self.v.y)
+        # elif self.poss.y >= window.height - self.R:
+        #     self.v.y = -abs(self.v.y)
 
         self.F = vector(0, 0)
 
@@ -66,17 +63,10 @@ def new_random_ball():
     return ball(poss, v, mass)
 
 
-# items = [new_random_ball() for _ in range(5)]
-items = [
-    ball(
-        vector(window.width // 2 - 150, window.height // 2),
-        vector(3, 0),
-        color=(200, 50, 50), static=True),
-    ball(
-        vector(window.width // 2 + 150, window.height // 2),
-        vector(-3, 0),
-        color=(50, 50, 200))
-]
+items = [new_random_ball() for _ in range(6)]
+items.append(ball(
+    static=True, poss=vector(window.width // 2, window.height // 2), mass=10_000
+))
 
 
 @window.event
@@ -84,18 +74,10 @@ def on_draw():
     window.clear()
     for i in range(len(items)):
         for j in range(len(items)):
-            if i == j:
-                continue
-            items[i].F_add(items[j])
-        if not items[i].static:
-            v = (items[i].poss + (items[i].F // (items[i].F.len() + 1) * 100))
-            circle(*v, radius=3, color=(200, 200, 200)).draw()
-
+            if not i == j:
+                items[i].F_add(items[j])
         items[i].update()
-    for i in items:
-        circle(*i.poss, i.R, color=i.color).draw()
-
-
+        circle(*items[i].poss, items[i].R, color=items[i].color).draw()
 
 
 if __name__ == '__main__':
