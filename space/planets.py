@@ -5,16 +5,15 @@ from random import randrange
 
 
 window = pyglet.window.Window(
-    fullscreen=True,
-    # width=1000, height=1000
+    # fullscreen=True,
+    width=1000, height=1000
 )
 circle = pyglet.shapes.Circle
 
 G = 1
 p_V = 0.3
 T = 0.5
-
-a_contact = 0.3
+k = 2_000
 
 
 class ball:
@@ -32,10 +31,11 @@ class ball:
         r = ball2.poss - self.poss
         r_len = r.len()
         r /= r_len
+        F = G * ball2.mass * self.mass / (r_len ** 2)
+        self.F += r * F
         if r_len < self.R + ball2.R:
-            r_len = self.R + ball2.R
-        F = r * (G * ball2.mass * self.mass / (r_len ** 2))
-        self.F += F
+            delta = self.R + ball2.R - r_len
+            self.F += r * (-k * delta)
 
     def update(self):
         if not self.static:
@@ -43,14 +43,14 @@ class ball:
             self.poss += self.v * T + a * (T ** 2) * 0.5
             self.v += a * T
 
-        # if self.poss.x <= self.R:
-        #     self.v.x = abs(self.v.x)
-        # elif self.poss.x >= window.width - self.R:
-        #     self.v.x = -abs(self.v.x)
-        # if self.poss.y <= self.R:
-        #     self.v.y = abs(self.v.y)
-        # elif self.poss.y >= window.height - self.R:
-        #     self.v.y = -abs(self.v.y)
+        if self.poss.x <= self.R:
+            self.v.x = abs(self.v.x)
+        elif self.poss.x >= window.width - self.R:
+            self.v.x = -abs(self.v.x)
+        if self.poss.y <= self.R:
+            self.v.y = abs(self.v.y)
+        elif self.poss.y >= window.height - self.R:
+            self.v.y = -abs(self.v.y)
 
         self.F = vector(0, 0)
 
@@ -63,10 +63,24 @@ def new_random_ball():
     return ball(poss, v, mass)
 
 
-items = [new_random_ball() for _ in range(6)]
-items.append(ball(
-    static=True, poss=vector(window.width // 2, window.height // 2), mass=10_000
-))
+def get_leveling_ball():
+    Px, Py = 0, 0
+    for i in items:
+        Px += i.mass * i.v.x
+        Py += i.mass * i.v.y
+    mass = 2_000
+    v = vector(-Px / mass, -Py / mass)
+    poss = vector(randrange(window.width), randrange(window.height))
+    return ball(poss, v, mass)
+
+
+# items = [new_random_ball() for _ in range(6)]
+# items.append(get_leveling_ball())
+items = [
+    ball(static=True,
+         poss=vector(window.width // 2 - 100, window.height // 2), v=vector(0, 0), mass=2_000, color=(50, 200, 50)),
+    ball(poss=vector(window.width // 2 + 100, window.height // 2), v=vector(-5, 0), mass=2_000, color=(50, 50, 200))
+]
 
 
 @window.event
@@ -76,8 +90,10 @@ def on_draw():
         for j in range(len(items)):
             if not i == j:
                 items[i].F_add(items[j])
-        items[i].update()
-        circle(*items[i].poss, items[i].R, color=items[i].color).draw()
+    for i in items:
+        i.update()
+        circle(*i.poss, i.R, color=i.color).draw()
+        # print(i.v)
 
 
 if __name__ == '__main__':
