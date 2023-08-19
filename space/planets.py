@@ -9,9 +9,11 @@ window = pyglet.window.Window(
 )
 circle = pyglet.shapes.Circle
 
-G = 0.5
+G = 1
 p_V = 0.3
-T = 1
+T = 0.2
+k = 500
+n = 1
 
 
 class ball:
@@ -36,9 +38,9 @@ class ball:
         if r_len <= self.R + ball2.R:
             v01 = cos_v(self.v, r) * self.v.len()
             v02 = cos_v(ball2.v, r) * ball2.v.len()
-            P1 = 2 * self.mass * ball2.mass * (v02 - v01) / (self.mass + ball2.mass)
-            self.v += r * (P1 / self.mass)
-            ball2.v += r * (-P1 / ball2.mass)
+            P1 = - 2 * self.mass * ball2.mass * (v02 - v01) / (self.mass + ball2.mass)
+            self.v += r * (-1) * (P1 / self.mass) * n
+            ball2.v += r * (P1 / ball2.mass) * n
 
     def update(self):
         if not self.static:
@@ -79,12 +81,12 @@ def get_leveling_ball():
 
 items = [new_random_ball() for _ in range(5)]
 
-# count = 0
 
+count = 0
 
 @window.event
 def on_draw():
-    # global count
+    global count
     window.clear()
     for i in range(len(items) - 1):
         for j in range(i + 1, len(items)):
@@ -98,10 +100,10 @@ def on_draw():
         if i.poss.y <= i.R or i.poss.y >= window.height - i.R:
             y = window.height + i.poss.y
             circle(*vector(i.poss.x, y), i.R, color=i.color).draw()
-        # if count == 200:
-        #     print(get_system_impulse().len())
-        #     count = 0
-        # count += 1
+        if count == 200:
+            print(get_system_impulse().len())
+            count = 0
+        count += 1
 
 
 if __name__ == '__main__':
