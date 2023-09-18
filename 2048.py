@@ -110,11 +110,12 @@ def move(num, arg1, arg2):
         flag = move_up_down(arg1, arg2)
     else:
         flag = move_left_right(arg1, arg2)
-    spawn()
+
     if check_game_over():
         status['game_over'] = True
         show()
     elif flag:
+        spawn()
         show()
 # def generate(arr):
 #     old = arr.copy()
