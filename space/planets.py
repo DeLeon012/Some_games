@@ -79,10 +79,8 @@ def get_leveling_ball():
     return ball(poss, v, mass)
 
 
-items = [new_random_ball() for _ in range(5)]
+items = [new_random_ball() for _ in range(10)]
 
-
-count = 0
 
 @window.event
 def on_draw():
@@ -100,10 +98,6 @@ def on_draw():
         if i.poss.y <= i.R or i.poss.y >= window.height - i.R:
             y = window.height + i.poss.y
             circle(*vector(i.poss.x, y), i.R, color=i.color).draw()
-        if count == 200:
-            print(get_system_impulse().len())
-            count = 0
-        count += 1
 
 
 if __name__ == '__main__':
