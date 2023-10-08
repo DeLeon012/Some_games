@@ -8,7 +8,6 @@ import time
 
 def key_exit():
     global flag
-    print('нажали')
     flag = False
 
 

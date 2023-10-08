@@ -7,17 +7,19 @@ from pyglet.window import key
 from pyglet.shapes import Rectangle
 from pyglet.text import Label
 
+from threading import Thread
+
 # parameters
-SIZE_X, SIZE_Y = 50, 40
-PIXEL_FOR_SQUARE = 12
-PER_SENT_GAP = 0.3
+SIZE_X, SIZE_Y = 80, 60
+PIXEL_FOR_SQUARE = 10
+PER_SENT_GAP = 0.2
 
 COLOR_WALL = (0, 250, 0)
 COLOR_SNAKE_HEAD = (0, 150, 0)
 COLOR_SNAKE_TAIL = (150, 150, 150)
 COLOR_APPLE = (250, 0, 0)
 
-PERIOD = 0.06
+PERIOD = 0.05
 time_1 = time.time()
 
 
@@ -88,6 +90,8 @@ def draw_map():
     draw_rectangle(*snake.head_position, COLOR_SNAKE_HEAD)
     for point in snake.tail:
         draw_rectangle(*point, COLOR_SNAKE_TAIL)
+    Label(f"Score: {snake.score}", font_name='Corbel', font_size=15,
+          x=40, y=Window.height - 20).draw()
 
 
 snake = Snake()
@@ -117,20 +121,33 @@ def on_key_press(*args):
         snake.direction = new_direction
 
 
-@Window.event
+# @Window.event
 def on_draw():
     global time_1
     Window.clear()
     draw_map()
-    Label(f"Score: {snake.score}", font_name='Corbel', font_size=15,
-          x=40, y=Window.height - 20).draw()
-    if time.time() - time_1 >= PERIOD:
-        snake.move()
-        time_1 = time.time()
+    # if time.time() - time_1 >= PERIOD:
+    #     snake.move()
+    #     time_1 = time.time()
+    snake.move()
     if snake.game_over:
         Label("G A M E  O V E R", font_name='Corbel', font_size=20, bold=True,
               x=Window.width // 2 - 90, y=Window.height // 2).draw()
 
 
-if __name__ == '__main__':
-    pyglet.app.run()
+task_draw = Thread(target=draw_map)
+task_move = Thread(target=snake.move)
+while True:
+    time_2 = time.time()
+    print(time_2 - time_1)
+    if not task_draw.is_alive() and not task_move.is_alive() and time_2 - time_1 >= PERIOD:
+        print('A')
+        # task_draw.start()
+        # task_move.start()
+        print('AA', time_2 - time_1 - PERIOD)
+        time_1 = time_2
+        print('AAA', time_2 - time_1)
+
+
+# if __name__ == '__main__':
+#     pyglet.app.run(PERIOD)
