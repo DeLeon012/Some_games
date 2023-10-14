@@ -6,6 +6,9 @@ class vector:
         self.x = x
         self.y = y
 
+    def from_points(self, point1, point2):
+        return vector(point2.x - point1.x, point2.y - point1.y)
+
     def __add__(self, other):
         x = self.x + other.x
         y = self.y + other.y
@@ -78,6 +81,10 @@ class vector:
         return vector(self.x, self.y)
 
 
+def vec_from_p(point1, point2):
+    return vector(point2.x - point1.x, point2.y - point1.y)
+
+
 def rotated(v: vector, angle: (float, int)):
     x, y = v.x, v.y
     return vector(x * cos(angle) - y * sin(angle), x * sin(angle) + y * cos(angle))
@@ -99,3 +106,13 @@ def get_color(mass):
     g = 116 + int((127 - 116) * k)
     b = 82 + int((247 - 82) * k)
     return r, g, b
+
+
+def check_cross_lines(p1, p2, p3, p4):
+    v1, v2 = vec_from_p(p1, p3), vec_from_p(p1, p4)
+    z1 = v1.x * v2.y - v1.y * v2.x
+
+    v1, v2 = vec_from_p(p2, p3), vec_from_p(p2, p4)
+    z2 = v1.x * v2.y - v1.y * v2.x
+    return (z1 > 0) ^ (z2 < 0)
+

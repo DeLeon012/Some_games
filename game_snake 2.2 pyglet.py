@@ -121,7 +121,7 @@ def on_key_press(*args):
         snake.direction = new_direction
 
 
-# @Window.event
+@Window.event
 def on_draw():
     global time_1
     Window.clear()
@@ -135,19 +135,19 @@ def on_draw():
               x=Window.width // 2 - 90, y=Window.height // 2).draw()
 
 
-task_draw = Thread(target=draw_map)
-task_move = Thread(target=snake.move)
-while True:
-    time_2 = time.time()
-    print(time_2 - time_1)
-    if not task_draw.is_alive() and not task_move.is_alive() and time_2 - time_1 >= PERIOD:
-        print('A')
-        # task_draw.start()
-        # task_move.start()
-        print('AA', time_2 - time_1 - PERIOD)
-        time_1 = time_2
-        print('AAA', time_2 - time_1)
+# task_draw = Thread(target=draw_map)
+# task_move = Thread(target=snake.move)
+# while True:
+#     time_2 = time.time()
+#     print(time_2 - time_1)
+#     if not task_draw.is_alive() and not task_move.is_alive() and time_2 - time_1 >= PERIOD:
+#         print('A')
+#         # task_draw.start()
+#         # task_move.start()
+#         print('AA', time_2 - time_1 - PERIOD)
+#         time_1 = time_2
+#         print('AAA', time_2 - time_1)
 
 
-# if __name__ == '__main__':
-#     pyglet.app.run(PERIOD)
+if __name__ == '__main__':
+    pyglet.app.run(PERIOD)
