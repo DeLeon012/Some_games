@@ -1,3 +1,4 @@
+import pyglet.graphics
 from pyglet.window import key
 from pyglet.text import Label
 
@@ -45,7 +46,21 @@ image_car.anchor_x = 130
 image_car.anchor_y = 20
 
 image_map = pyglet.image.load('Map_image.png')
-image_map = pyglet.sprite.Sprite(image_map, -150, 0)
+Sprite_map = pyglet.sprite.Sprite(image_map, -150, 0)
+
+
+def new_batch():
+    labels_batch = pyglet.graphics.Batch()
+    for i in range(len(player.laps)):
+        print(i)
+        Label(f'Lap {i + 1}: {int(player.laps[i] // 60)} мин {int(player.laps[i] % 60)}'
+              f' сек {int(player.laps[i] * 100 % 100)}', font_name='Bahnschrift', font_size=12,
+              x=window.width - 300, y=(window.height - 50) - 18 * (len(player.laps) - i), batch=labels_batch).draw()
+    labels_batch.draw()
+    return labels_batch
+
+
+scores_text = ''
 
 
 @window.event
@@ -79,10 +94,10 @@ def on_key_release(*args):
 
 @window.event
 def on_draw():
-    global time_start
+    global time_start, scores_text
     window.clear()
 
-    image_map.draw()
+    Sprite_map.draw()
     car.move(A_FRICTION)
     car.draw_car(image_car, CAR_ROTATE_WHEEL)
 
@@ -102,20 +117,22 @@ def on_draw():
 
     if any(check_cross_lines(*j, *finish_line) for j in car.lines()) and player.checkpoint:
         player.laps.append(time_end - time_start)
-        time_start = time_end
+        scores_text = f'Lap {len(player.laps)}: {int((time_end - time_start) // 60)}:' \
+                      f'{int((time_end - time_start) % 60)}.{int((time_end - time_start) * 100 % 100)}\n' + scores_text
         player.checkpoint = False
+        time_start = time_end
 
     elif any(check_cross_lines(*j, *checkpoint_line) for j in car.lines()) and not player.checkpoint:
         player.checkpoint = True
 
     Label('Управление: WASD или стрелками\nEsc - закрыть игру', font_name='Corbel', font_size=10, x=15, y=30,
           multiline=True, width=300).draw()
-    for i in range(len(player.laps)):
-        Label(f'Lap {i + 1}: {int(player.laps[i] // 60)} мин {int(player.laps[i] % 60)}'
-              f' сек {int(player.laps[i] * 100 % 100)}', font_name='Bahnschrift', font_size=12,
-              x=window.width - 300, y=(window.height - 50) - 18 * (len(player.laps) - i)).draw()
-    Label(f'Lap {len(player.laps) + 1}: {int((time_end - time_start) // 60)} мин {int((time_end - time_start) % 60)}'
-          f' сек {int((time_end - time_start) * 100 % 100)} мс', font_name='Bahnschrift', font_size=12,
+
+    Label(scores_text, font_name='Bahnschrift', font_size=12,
+          x=window.width - 300, y=window.height - 50 - 18, multiline=True, width=250).draw()
+
+    Label(f'Lap {len(player.laps) + 1}: {int((time_end - time_start) // 60)}:{int((time_end - time_start) % 60)}.'
+          f'{int((time_end - time_start) * 100 % 100)}', font_name='Bahnschrift', font_size=12,
           x=window.width - 300, y=window.height - 50).draw()
 
     Label(f'Count of crashes: {player.count_of_dies}', font_name='Bahnschrift', font_size=12,

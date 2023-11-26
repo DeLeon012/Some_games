@@ -1,4 +1,4 @@
-from decart_vecor import *
+from my_math.decart_vecor import *
 import math
 import pyglet
 
