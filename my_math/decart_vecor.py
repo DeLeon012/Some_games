@@ -58,6 +58,9 @@ class vector:
             raise Exception('Непонятный расчет (деление)')
         return vector(x, y)
 
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
     def rotate(self, alf):
         x, y = self.x, self.y
         self.x = x * cos(alf) - y * sin(alf)

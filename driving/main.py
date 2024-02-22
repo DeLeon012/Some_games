@@ -1,7 +1,7 @@
 import pyglet.graphics
 from pyglet.window import key
 from pyglet.text import Label
-
+from pyglet.image.codecs.pil import PILImageDecoder
 from time import time
 
 from classes import *
@@ -10,7 +10,7 @@ from classes import *
 A_FRICTION = 0.08
 CAR_ROTATE = 0.25
 F_CAR = 1
-SCALE = 0.5
+SCALE = 0.8
 CAR_ROTATE_WHEEL = -5
 
 window = pyglet.window.Window(
@@ -40,12 +40,11 @@ player = Player()
 time_start = time()
 
 car = Car(SCALE)
-image_car = pyglet.image.load('sports-car-delorean.png',
-                              decoder=pyglet.image.codecs.png.PNGImageDecoder())
+image_car = pyglet.image.load('sports-car-delorean', file=car_image, decoder=PILImageDecoder())
 image_car.anchor_x = 130
 image_car.anchor_y = 20
 
-image_map = pyglet.image.load('Map_image.png')
+image_map = pyglet.image.load(filename='Map_image', file=map_image, decoder=PILImageDecoder())
 Sprite_map = pyglet.sprite.Sprite(image_map, -150, 0)
 
 

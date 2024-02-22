@@ -1,0 +1,17 @@
+# parameters
+# WIDTH = 900
+SIZE_X, SIZE_Y = 21, 21  # Для AI нужны четное X и нечетное Y
+PIXEL_FOR_SQUARE = 30
+
+WALLS_GAP = 1
+WALL_WIDTH = 5
+
+# PIXEL_FOR_SQUARE = WIDTH // SIZE_X
+PER_SENT_GAP = 0.2
+
+COLOR_WALL = (150, 150, 150)
+COLOR_SNAKE_HEAD = (0, 100, 0)
+COLOR_SNAKE_TAIL = (0, 128, 0)
+COLOR_APPLE = (200, 0, 0)
+
+TIMES = 1

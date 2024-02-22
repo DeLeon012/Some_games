@@ -1,20 +1,24 @@
-import pyglet
-from pyglet import shapes
+w = 4
+h = 6
 
-window = pyglet.window.Window(500, 500)
-batch = pyglet.graphics.Batch()
+l = []
+line = [0] * w
+for _ in range(h):
+    l.append(line.copy())
 
-# red_sequare = shapes.Rectangle(150, 240, 200, 20, color=(255, 55, 55), batch=batch)
-# green_sequare = shapes.Rectangle(175, 220, 150, 20, color=(55, 255, 55), batch=batch)
-# blue_sequare = shapes.Rectangle(200, 200, 100, 20, color=(55, 55, 255), batch=batch)
 
-shapes.Rectangle(150, 240, 200, 20, color=(255, 55, 55), batch=batch)
-shapes.Rectangle(175, 220, 150, 20, color=(55, 255, 55), batch=batch)
-shapes.Rectangle(200, 200, 100, 20, color=(55, 55, 255), batch=batch)
+def f(x, y, w, h):
+    if x == 0:
+        return (h * w - y) % (h * w)
 
-@window.event
-def on_draw():
-    window.clear()
-    batch.draw()
+    if not (y % 2):
+        return x + y * (w - 1)
+    return y * (w - 1) + (w - x)
 
-pyglet.app.run()
+
+for x in range(w):
+    for y in range(h):
+        l[y][x] = f(x, y, w, h)
+
+for i in l:
+    print(i)
